@@ -1,0 +1,43 @@
+---
+- name: Deploy VRF and Bridge Domain
+  hosts: localhost
+  vars_files: vars.yml
+  tasks:
+  - name: Deploy VRF
+    cisco.aci.aci_vrf:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      vrf: "{{ vrf }}"
+      tenant: "{{ tenant }}"
+      policy_control_preference: unenforced
+      policy_control_direction: ingress
+      state: present
+    delegate_to: localhost
+ 
+  - name: Deploy Bridge Domain
+    cisco.aci.aci_bd:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      tenant: "{{ tenant }}"
+      bd: "{{ bd }}"
+      vrf: "{{ vrf }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Deploy Bridge Domain Subnet
+    cisco.aci.aci_bd_subnet:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      tenant: "{{ tenant }}"
+      bd: "{{ bd }}"
+      gateway: "{{ gw_address }}"
+      mask: 24
+      state: present
+      scope: shared
+    delegate_to: localhost

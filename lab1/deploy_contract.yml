@@ -1,0 +1,19 @@
+---
+- name: Deploy vzAny (VRF) contract
+  hosts: localhost
+  vars_files: vars.yml
+  tasks:
+  - name: Deploy vzAny Contract
+    cisco.aci.aci_rest:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      path: "/api/node/mo/uni/tn-{{ tenant }}/ctx-{{ vrf }}/any.json"
+      method: post
+      content:
+        vzRsAnyToConsIf:
+          attributes:
+            tnVzCPIfName: EXPORTED_JUMPBOX
+            status: created
+    delegate_to: localhost

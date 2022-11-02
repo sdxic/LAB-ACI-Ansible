@@ -1,0 +1,24 @@
+---
+# Generic
+lab_number: 1 # input student number
+username: "LABS-ACI-Ansible{{ lab_number }}"
+password: "Labs2022!"
+aci_hostname: apic1-pod2.mgmt.siriussdx.com
+
+# ACI Logical
+tenant: "LABS-ACI-Ansible{{ lab_number }}"
+vrf: VRF
+ap: APP_PROF
+bd: BD
+gw_address: "10.242.{{ lab_number }}.1"
+epg:
+   - WEB_EPG
+   - APP_EPG
+   - DB_EPG
+encap:
+   - "{{ 1100+(lab_number*3) -2 }}"
+   - "{{ 1100+(lab_number*3) -1 }}"
+   - "{{ 1100+(lab_number*3) }}"
+app_web_only:
+   - WEB_EPG
+   - APP_EPG

@@ -1,0 +1,31 @@
+---
+- name: Deploy Application Profile and EPGs
+  hosts: localhost
+  vars_files: vars.yml
+  tasks:
+  - name: Deploy Application Profile
+    cisco.aci.aci_ap:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      tenant: "{{ tenant }}"
+      ap: "{{ ap }}"
+      state: present
+    delegate_to: localhost
+
+  - name: Deploy Endpoint Group
+    cisco.aci.aci_epg:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      tenant: "{{ tenant }}"
+      ap: "{{ ap }}"
+      epg: "{{ item }}"
+      bd: "{{ bd }}"
+      preferred_group: no
+      state: present
+    delegate_to: localhost
+    with_items:
+      "{{ epgs }}"

@@ -1,0 +1,31 @@
+# !!!DISCLAIMER: DO NOT USE IN PRODUCTION ENVIRONMENT!!!
+---
+- name: Remove all VRFs
+  hosts: localhost
+  vars_files: vars.yml
+  tasks:
+  - name: Query all VRFs
+    cisco.aci.aci_vrf:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      tenant: "{{ tenant }}"
+      state: query
+    delegate_to: localhost
+    register: query_vrf
+    
+  - name: Remove a VRF for a tenant
+    cisco.aci.aci_vrf:
+      host: "{{ aci_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no
+      vrf: "{{ item.fvCtx.attributes.name }}"
+      tenant: "{{ tenant }}"
+      state: absent
+    delegate_to: localhost
+    loop: "{{ query_vrf.current.0.fvTenant.children }}"
+    loop_control:
+      label: "Deleting VRF: {{ item.fvCtx.attributes.name }}"
+    ignore_errors: yes
