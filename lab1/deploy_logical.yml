@@ -1,9 +1,17 @@
 ---
 - name: Deploy Full Logical Configuration
   hosts: localhost
+  gather_facts: false
   vars_files: vars.yml
+  
   tasks:
-  # - name: Deploy VRF
+  - name: Validate Input
+    assert:
+      that:
+        - lab_name | regex_search("^lab[0-9]{1,3}-[0-9]{1,3}$")
+      fail_msg: "Invalid lab_name variable entered, please correct and retry.  You entered: {{ lab_name }}"
+
+  # - name: Create VRF
   #   cisco.aci.aci_vrf:
   #     host: "{{ aci_hostname }}"
   #     username: "{{ username }}"
@@ -16,58 +24,57 @@
   #     state: present
   #   delegate_to: localhost
   - name: test include
-    include: vrf_bd.yml
-    delegate_to: localhost
+    include: deploy_vrf_bd.yml
 
-  - name: Deploy Bridge Domain
+  - name: Create Bridge Domain
+    delegate_to: localhost
     cisco.aci.aci_bd:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      bd: "{{ bd }}"
-      vrf: "{{ vrf }}"
-      state: present
-    delegate_to: localhost
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      bd: "{{ aci.bd }}"
+      vrf: "{{ aci.vrf }}"
+      state: "present"
 
-  - name: Deploy Bridge Domain Subnet
+  - name: Create Bridge Domain Subnet
+    delegate_to: localhost
     cisco.aci.aci_bd_subnet:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      bd: "{{ bd }}"
-      gateway: "{{ gw_address }}"
-      mask: 24
-      state: present
-      scope: shared
-    delegate_to: localhost
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      bd: "{{ aci.bd }}"
+      gateway: "{{ aci.gw }}"
+      mask: "24"
+      state: "present"
+      scope: "shared"
 
-  - name: Deploy AP
+  - name: Create AP
     cisco.aci.aci_ap:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      ap: "{{ ap }}"
-      state: present
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      ap: "{{ aci.ap }}"
+      state: "present"
     delegate_to: localhost
 
-  - name: Deploy EPG
+  - name: Create EPG
     cisco.aci.aci_epg:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
       tenant: "{{ tenant }}"
-      ap: "{{ ap }}"
-      epg: "{{ item }}"
-      bd: "{{ bd }}"
-      preferred_group: yes
-      state: present
+      ap: "{{ aci.ap }}"
+      epg: "{{ aci.item }}"
+      bd: "{{ aci.bd }}"
+      preferred_group: "yes"
+      state: "present"
     delegate_to: localhost
     with_items:
-      "{{ epgs }}"
+      "{{ aci.epg }}"

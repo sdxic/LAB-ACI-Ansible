@@ -1,24 +1,26 @@
 ---
-# Generic
-lab_number: 1 # input student number
-username: "LABS-ACI-Ansible{{ lab_number }}"
-password: "Labs2022!"
-aci_hostname: apic1-pod2.mgmt.siriussdx.com
+# Generic Vars
+lab_name: "<your_lab_id>" # Check https://catalog.siriussdx.com/my.labs.php - Format: "lab242-1"
+lab_password: "<your_lab_password>"
 
-# ACI Logical
-tenant: "LABS-ACI-Ansible{{ lab_number }}"
-vrf: VRF
-ap: APP_PROF
-bd: BD
-gw_address: "10.242.{{ lab_number }}.1"
-epg:
-   - WEB_EPG
-   - APP_EPG
-   - DB_EPG
-encap:
-   - "{{ 1100+(lab_number*3) -2 }}"
-   - "{{ 1100+(lab_number*3) -1 }}"
-   - "{{ 1100+(lab_number*3) }}"
-app_web_only:
-   - WEB_EPG
-   - APP_EPG
+# Generated Vars
+second_octet: "{{ lab_name.replace('lab','').split('-')[0] }}"
+third_octet: "{{ lab_name.split('-')[1] }}"
+
+# ACI Vars
+aci:
+  hostname: "aci.siriussdx.com"
+  username: "{{ lab_name }}"
+  password: "{{ lab_password }}"
+  tenant: "{{ lab_name }}"
+  vrf: "vrf"
+  ap: "ap"
+  bd: "bd"
+  gw: "10.{{ second_octet }}.{{ third_octet }}.1"
+  epg:
+    - "web_epg"
+    - "app_epg"
+    - "db_epg"
+  app_web_only:
+    - "web_epg"
+    - "app_epg"

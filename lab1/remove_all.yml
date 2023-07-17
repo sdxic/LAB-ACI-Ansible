@@ -2,85 +2,90 @@
 ---
 - name: Remove all VRFs BDs and APs
   hosts: localhost
+  gather_facts: false
   vars_files: vars.yml
+
   tasks:
-  - name: Query all VRFs
-    cisco.aci.aci_vrf:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      state: query
+  - name: Validate Input
+    assert:
+      that:
+        - lab_name | regex_search("^lab[0-9]{1,3}-[0-9]{1,3}$")
+      fail_msg: "Invalid lab_name variable entered, please correct and retry.  You entered: {{ lab_name }}"
+
+  - name: Query VRFs
     delegate_to: localhost
+    cisco.aci.aci_vrf:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      state: "query"
     register: query_vrf
     
-  - name: Remove a VRF for a tenant
-    cisco.aci.aci_vrf:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      vrf: "{{ item.fvCtx.attributes.name }}"
-      tenant: "{{ tenant }}"
-      state: absent
+  - name: Remove VRFs
     delegate_to: localhost
+    cisco.aci.aci_vrf:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      vrf: "{{ item.fvCtx.attributes.name }}"
+      tenant: "{{ aci.tenant }}"
+      state: "absent"
     loop: "{{ query_vrf.current.0.fvTenant.children }}"
     loop_control:
       label: "Deleting VRF: {{ item.fvCtx.attributes.name }}"
     ignore_errors: yes
 
-  - name: Query all AP in Tn
-    cisco.aci.aci_ap:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      state: query
+  - name: Query Application Profiles
     delegate_to: localhost
+    cisco.aci.aci_ap:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      state: "query"
     register: query_ap
 
-  - name: Remove the APs
-    cisco.aci.aci_ap:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      ap: "{{ item.fvAp.attributes.name }}"
-      state: absent
+  - name: Remove APs
     delegate_to: localhost
+    cisco.aci.aci_ap:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      ap: "{{ item.fvAp.attributes.name }}"
+      state: "absent"
     loop: "{{ query_ap.current.0.fvTenant.children }}"
     loop_control:
       label: "Deleting AP: {{ item.fvAp.attributes.name }}"
     ignore_errors: yes
 
-  - name: Query all Bridge Domains in Tn
-    cisco.aci.aci_bd:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      state: query
+  - name: Query Bridge Domains
     delegate_to: localhost
+    cisco.aci.aci_bd:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      state: "query"
     register: query_bd
 
-  - name: Delete all the Bridge Domains Found
-    cisco.aci.aci_bd:
-      host: "{{ aci_hostname }}"
-      username: "{{ username }}"
-      password: "{{ password }}"
-      validate_certs: no
-      tenant: "{{ tenant }}"
-      bd: "{{ item.fvBD.attributes.name }}"
-      state: absent
+  - name: Delete BDs
     delegate_to: localhost     
+    cisco.aci.aci_bd:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      bd: "{{ item.fvBD.attributes.name }}"
+      state: "absent"
     loop: "{{ query_bd.current.0.fvTenant.children }}"
     loop_control:
       label: "Deleting BD: {{ item.fvBD.attributes.name }}"
     ignore_errors: yes
-
-
- 
