@@ -64,13 +64,13 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 * Ansible CLI
   1. Launch `Terminal` located on the left menu within the jumpbox.
 * Automation Platform GUI
-  1. Access `Automation Platform` through the Okta `My Apps` page.
+  1. Access `Red Hat Ansible Automation Platform (RHAAP)` through the Okta `My Apps` page.
   2. Authentication is handled automatically through Okta.
 
 <br><br>
 
 # Part 3: Lab 1 - Ansible CLI
-1. Review the 3-tier application topology.<br>![](images/topology.png)
+1. Review the 3-tier application topology.<br>![](images/topology.jpg)
 1. Review the [Lab 1 repository](https://github.com/sdxic/LAB-ACI-Ansible/tree/main/lab1/)
 1. Manually deploy a VRF in ACI
     * In the ACI GUI navigate to `Tenants -> labX -> Networking -> VRFs`.<br>![](images/lab1_step3a.jpg)
