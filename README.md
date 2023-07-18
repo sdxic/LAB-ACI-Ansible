@@ -70,7 +70,7 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 <br><br>
 
 # Part 3: Lab 1 - Ansible CLI
-1. Clone the GitHub repo in the Terminal app
+1. Clone the GitHub repo in the Terminal app and navigate into the `LAB-ACI-Ansible/lab1` directory
     ```
     git clone https://github.com/sdxic/LAB-ACI-Ansible.git
     ```
