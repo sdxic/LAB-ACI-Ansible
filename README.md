@@ -70,10 +70,6 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 <br><br>
 
 # Part 3: Lab 1 - Ansible CLI
-1. Clone the GitHub repo in the Terminal app and navigate into the `LAB-ACI-Ansible/lab1` directory
-    ```
-    git clone https://github.com/sdxic/LAB-ACI-Ansible.git
-    ```
 1. Review the 3-tier application topology.<br>![](images/topology.jpg)
 1. Review the [Lab 1 repository](https://github.com/sdxic/LAB-ACI-Ansible/tree/main/lab1/)
 1. Manually deploy a VRF in ACI
@@ -91,7 +87,13 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
     ```bash
     user@localhost:~$ cd LAB-ACI-Ansible/lab1
     user@localhost:~/LAB-ACI-Ansible/lab1$ ls
-    collections  deploy_ap_epg.yml  deploy_binding.yml  deploy_contract.yml  deploy_logical.yml  deploy_vrf_bd.yml  remove_all.yml  remove_vrf.yml  vars.yml
+    collections  deploy_ap_epg.yml  deploy_epg_vmm.yml  deploy_jb_contract.yml  deploy_logical.yml  deploy_vrf_bd.yml  input_validation.yml  remove_all.yml  remove_vrf.yml  vars.yml
+    ```
+1. Edit the `vars.yml` file and replace `<your_lab_id>` and `<your_lab_password>` with the one listed on the [My Labs](https://catalog.siriussdx.com/my.labs.php) page.
+    ```
+    # Generic Vars
+    lab_name: "<your_lab_id>" # Check https://catalog.siriussdx.com/my.labs.php - Format: "lab242-1"
+    lab_password: "<your_lab_password>"
     ```
 1. Review & run the `remove_vrf.yml` playbook.
     ```bash
