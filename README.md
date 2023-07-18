@@ -70,6 +70,10 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 <br><br>
 
 # Part 3: Lab 1 - Ansible CLI
+1. Clone the GitHub repo in the Terminal app
+    ```
+    git clone https://github.com/sdxic/LAB-ACI-Ansible.git
+    ```
 1. Review the 3-tier application topology.<br>![](images/topology.jpg)
 1. Review the [Lab 1 repository](https://github.com/sdxic/LAB-ACI-Ansible/tree/main/lab1/)
 1. Manually deploy a VRF in ACI
