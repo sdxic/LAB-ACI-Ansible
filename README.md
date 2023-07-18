@@ -11,15 +11,15 @@ You will be required to modify some files during the course of this workshop.  Y
 * Part 1: Technology Intro
     * Cisco Application Centric Infrastructure (ACI)
     * Red Hat Ansible
-    * Red Hat Ansible Automation Platform (RHAP)
+    * Red Hat Ansible Automation Platform (RHAAP)
 * Part 2: Lab Access 
     * Okta Account Setup
     * Virtual Desktop
         * ACI GUI
         * Ansible CLI
-        * RHAP GUI
+        * AP GUI
 * Part 3: Lab 1 - Ansible CLI
-* Part 4: Lab 2 - RHAP GUI
+* Part 4: Lab 2 - AP GUI
 
 <br><br>
 
@@ -44,22 +44,28 @@ Automatin Platform contains an API as well enabling programmatic control by high
 # Part 2: Lab Access
 ## Okta Account Setup
 1. Navigate to https://siriussdx.okta.com/
-2. Create an account if you do not currently have one by selecting the "Sign up" link at the bottom of the login box.<br>
+2. Create an account if you do not currently have one by selecting the `Sign up` link at the bottom of the login box.<br>
 ![](images/okta_login.jpg)
 
+<br>
+
 ## Schedule Your Lab
-Once logged into Okta, under "My Apps" select "Catalog."  This will launch the SDx Lab Catalog where you can browse the various available labs.  For this lab navigate [here](https://catalog.siriussdx.com/catalog.php?parent_id=1&category_id=2).
+Once logged into Okta, under `My Apps` select `Catalog.`  This will launch the SDx Lab Catalog where you can browse the various available labs.  For this lab navigate [here](https://catalog.siriussdx.com/catalog.php?parent_id=1&category_id=2).<br>
+![](images/catalog.jpg)
+
+<br>
 
 ## Virtual Desktop
-Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the virtual desktop that you will use to access the lab resources.
+Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the virtual desktop that you will use to access the lab resources.
 * ACI GUI
-  1. Launch the "ACI GUI" icon located on the desktop from inside the lab.
-  2. Login with the appropriate credentials.
+  1. Launch `FireFox` located on the left menu within the jumpbox.
+  2. Login with the appropriate credentials found [here](https://catalog.siriussdx.com/my.labs.php).
+  3. ACI will be the default landing page.  However you can use the FireFox bookmark or navigate to https://aci.siriussdx.com if needed.
 * Ansible CLI
-  1. Launch the "Terminal" icon located on the desktop from inside the lab.
-* RHAP GUI
-  1. Launch the "RHAP GUI" icon located on the desktop from inside the lab.
-  2. Login with the appropriate credentials.
+  1. Launch `Terminal` located on the left menu within the jumpbox.
+* Automation Platform GUI
+  1. Access `Automation Platform` through the Okta `My Apps` page.
+  2. Authentication is handled automatically through Okta.
 
 <br><br>
 
@@ -67,7 +73,7 @@ Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the
 1. Review the 3-tier application topology.<br>![](images/topology.png)
 1. Review the [Lab 1 repository](https://github.com/sdxic/LAB-ACI-Ansible/tree/main/lab1/)
 1. Manually deploy a VRF in ACI
-    * In the ACI GUI navigate to `Tenants -> LAB-ACI-AnsibleX -> Networking -> VRFs`.<br>![](images/lab1_step3a.jpg)
+    * In the ACI GUI navigate to `Tenants -> labX -> Networking -> VRFs`.<br>![](images/lab1_step3a.jpg)
     * Right click on VRFs and selected `Create VRF`.<br>
     Enter any value in the `Name` field.<br>
     ***Uncheck: `Create A Bridge Domain`***<br>![](images/lab1_step3b.jpg)<br>
@@ -154,7 +160,7 @@ Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the
       delegate_to: localhost
       register: query_result
     ```
-1. Run playbook `deploy_ap_epg.yml` and review any EPG faults for the newly created objects.  Navigate to `Application Profiles -> APP_PROF -> Application EPGs -> WEB_EPG`.  Select `Faults` from the right side menu.<br>
+1. Run playbook `deploy_ap_epg.yml` and review any EPG faults for the newly created objects.  Navigate to `Application Profiles -> ap -> Application EPGs -> web_ep`.  Select `Faults` from the right side menu.<br>
     ```bash
     user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_ap_epg.yml 
     PLAY [Deploy Application Profile and EPGs] **************************************************
@@ -166,9 +172,9 @@ Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the
     ok: [localhost -> localhost]
 
     TASK [Deploy Endpoint Group] ****************************************************************
-    changed: [localhost -> localhost] => (item=WEB_EPG)
-    changed: [localhost -> localhost] => (item=APP_EPG)
-    changed: [localhost -> localhost] => (item=DB_EPG)
+    changed: [localhost -> localhost] => (item=web_ep)
+    changed: [localhost -> localhost] => (item=app_epg)
+    changed: [localhost -> localhost] => (item=db_epg)
 
     PLAY RECAP **********************************************************************************
     localhost                  : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
@@ -176,7 +182,7 @@ Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the
     user@localhost:~/LAB-ACI-Ansible/lab1$ 
 
     ```
-    ![](images/lab1_step9a.JPG)<br>
+    ![](images/lab1_step9a.jpg)<br>
     Why are we seeing fault(s)? What do the fault(s) mean and how can we fix them?
 1. Run playbook `deploy_vrf_bd.yml` and observe the faults page for any changes.  You should see the lifecycle status change to `"Soaking, Clearing"` or `"Raised, Clearing"` or similar.<br>
     ```bash
@@ -200,7 +206,7 @@ Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the
 
     user@localhost:~/LAB-ACI-Ansible/lab1$ 
     ```
-    ![](images/lab1_step10.JPG)<br>
+    ![](images/lab1_step10.jpg)<br>
     > *Note: it may take up to 2 minutes for the faults to fully clear.*
 1. Run playbook `remove_all.yml` and observe changes in the ACI GUI.  What did you notice?  Your tenant should be blank and all VRFs, EPGs, APs and BDs will have been removed.
     ```bash
@@ -214,19 +220,19 @@ Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the
     ok: [localhost -> localhost]
 
     TASK [Remove a VRF for a tenant] ************************************************************
-    changed: [localhost -> localhost] => (item=Deleting VRF: VRF)
+    changed: [localhost -> localhost] => (item=Deleting VRF: vrf)
 
     TASK [Query all AP in Tn] *******************************************************************
     ok: [localhost -> localhost]
 
     TASK [Remove the APs] ***********************************************************************
-    changed: [localhost -> localhost] => (item=Deleting AP: APP_PROF)
+    changed: [localhost -> localhost] => (item=Deleting AP: ap)
 
     TASK [Query all Bridge Domains in Tn] *******************************************************
     ok: [localhost -> localhost]
 
     TASK [Delete all the Bridge Domains Found] **************************************************
-    changed: [localhost -> localhost] => (item=Deleting BD: BD)
+    changed: [localhost -> localhost] => (item=Deleting BD: bd)
 
     PLAY RECAP **********************************************************************************
     localhost                  : ok=7    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
@@ -254,23 +260,42 @@ Navigate back to Okta, under "My Apps" select "LAB Access"  This will launch the
     changed: [localhost -> localhost]
 
     TASK [Deploy EPG] ***************************************************************************
-    changed: [localhost -> localhost] => (item=WEB_EPG)
-    changed: [localhost -> localhost] => (item=APP_EPG)
-    changed: [localhost -> localhost] => (item=DB_EPG)
+    changed: [localhost -> localhost] => (item=web_epg)
+    changed: [localhost -> localhost] => (item=app_epg)
+    changed: [localhost -> localhost] => (item=db_epg)
 
     PLAY RECAP **********************************************************************************
     localhost                  : ok=6    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
     user@localhost:~/LAB-ACI-Ansible/lab1$ 
     ```
-1. Run playbook `deploy_contract.yml` and verify contracts now exist between EPGs.
+1. Run playbook `deploy_jb_contract.yml` and verify the consumed contract `LAB-SVC-L3Out` now exists on each of the EPGs.
+1. Verify connectivity from your jumpbox to each of the test virtual machines:
+    * web1
+    * web2
+    * app1
+    * app2
+    * db1
+    ```bash
+    user@localhost:~/LAB-ACI-Ansible/lab1$ ping web1 -c 3
+    PING web1 (10.242.1.11) 56(84) bytes of data.
+    64 bytes from lab242-1-web1 (10.242.1.11): icmp_seq=1 ttl=64 time=0.024 ms
+    64 bytes from lab242-1-web1 (10.242.1.11): icmp_seq=2 ttl=64 time=0.020 ms
+    64 bytes from lab242-1-web1 (10.242.1.11): icmp_seq=3 ttl=64 time=0.019 ms
 
->Lab 1 Complete!  You should now be familiar with basic Ansible and ACI concepts and integrations.  Proceed to Lab 2 for an introduction into Red Hat Ansible Automation Platform.
+    --- web1 ping statistics ---
+    3 packets transmitted, 3 received, 0% packet loss, time 2045ms
+    rtt min/avg/max/mdev = 0.019/0.021/0.024/0.002 ms
+    ```
+
+<br>
+
+><br>Lab 1 Complete!  You should now be familiar with basic Ansible and ACI concepts and integrations.  Proceed to Lab 2 for an introduction into Red Hat Ansible Automation Platform.<br>&nbsp;
 
 <br><br>
 
-# Part 4: Lab 2 - RHAP GUI
-1. Explore the RHAP GUI.
+# Part 4: Lab 2 - Automation Platform GUI
+1. Explore the Automation Platform GUI.
 1. Create credentials for ACI.
     * Select `Resources -> Credentials` under the left menu and then the `Add` button to create a new set of credentials.
     * Fill in a `Name` and set `Credential Type` = `Network`.
