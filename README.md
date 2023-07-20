@@ -39,6 +39,11 @@ Automatin Platform also introduces workflow templates that allows jobs, or playb
 
 Automatin Platform contains an API as well enabling programmatic control by higher layer orchestration systems to create and/or kick off workflows. This is especially powerful as an integration point for example with ITSM and CMDB tools like ServiceNow.
 
+## Lab Overview
+Each lab utilizes the same basic topology components:
+* A dedicated ACI tenant which hosts the test virtual machines within a classic “3-tier” ACI application profile comprising three security zones (EPGs): Web, App, and DB. Full administrative access is granted within this tenant and to all of its related logical components.
+* An external services tenant hosts the lab JumpBox and Automation Platform. No administrative rights or visibility of this tenant are provided, however, it is included in topology diagrams for clarity.
+
 <br><br>
 
 # Part 2: Lab Access
@@ -70,6 +75,7 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 <br><br>
 
 # Part 3: Lab 1 - Ansible CLI
+Lab 1 covers the ACI object buildout introducing Ansible as the automation engine, but stops short of securing each of the zones. Review the topology diagram below. At the conclusion of lab 1, you will be able to ping, SSH and send HTTP requests to all test virtual machines in your tenant from your jump box. Additionally, all test virtual machines in your tenant will be able to ping, SSH and send HTTP requests to each other.
 1. Review the 3-tier application topology.<br>![](images/topology.jpg)
 1. Review the [Lab 1 repository](https://github.com/sdxic/LAB-ACI-Ansible/tree/main/lab1/)
 1. Manually deploy a VRF in ACI
@@ -81,7 +87,14 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 1. Repeat step 3 creating a second VRF with a different name.<br>![](images/lab1_step4.jpg)
 1. Open a terminal and clone the repository.
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ git clone https://www.github.com/sdxic/LAB-ACI-Ansible/LAB-ACI-Ansible.git
+    user@localhost:~/LAB-ACI-Ansible/lab1$ git clone https://www.github.com/sdxic/LAB-ACI-Ansible.git
+    Cloning into 'LAB-ACI-Ansible'...
+    warning: redirecting to https://github.com/sdxic/LAB-ACI-Ansible.git/
+    remote: Enumerating objects: 72, done.
+    remote: Counting objects: 100% (72/72), done.
+    remote: Compressing objects: 100% (44/44), done.
+    remote: Total 72 (delta 29), reused 64 (delta 25), pack-reused 0
+    Unpacking objects: 100% (72/72), 636.99 KiB | 3.48 MiB/s, done.
     ```
 1. Change to the `LAB-ACI-Ansible/lab1` directory.  List the files in this directory with the `ls` command.
     ```bash
@@ -301,16 +314,36 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 <br><br>
 
 # Part 4: Lab 2 - Automation Platform GUI
-1. Explore the Automation Platform GUI.
+Lab 2 deploys the same environment and then layers security functionality over it, achieving the entire deployment using Ansible Tower job templates and workflow templates. The student creates their own Tower project, and builds and runs the templates under proctor guidance.  Review the topology diagrams below to familiarize yourself with the various states the logical configuration will enter.  These portray how lab 2 incrementally introduces additional ACI security functionality to better secure the application profile created in lab 1, but it introduces Ansible Automation Platform to facilitate the changes.
 1. Create credentials for ACI.
     * Select `Resources -> Credentials` under the left menu and then the `Add` button to create a new set of credentials.
     * Fill in a `Name` and set `Credential Type` = `Network`.
-    * Input your username in the format `aci-ansibleX` where `X` is your lab number.  (e.g. `aci-ansible3`) for lab 3.
-1. Create a project and sync with repository.
+    * Input your lab username in the format `labX-Y`.  (e.g. `lab242-23`).  Find your username & password [here](https://catalog.siriussdx.com/my.labs.php).
+    * Input your lab password.
+    <br>![](images/lab2_step1.jpg)<br>
+1. Create a project and sync with repository.  Projects are references to the codebase that contains playbooks.
+    * Select `Resources -> Projects` under the left menu and then the `Add` button to create a new project.
+    * Fill in a `Name` and select `Git` as the `Source Control Type`.  This will expand more options to fill out below.
+    * Under `Source Control URL` enter `https://github.com/sdxic/LAB-ACI-Ansible.git`.
+    * Click on the question marks next to each of the checkboxes towards the bottom: Clean, Delete, Track submodules, etc. for a description of what each does.  It's usually recommended to select Clean, Delete and Update Revision on Launch.
+    <br>![](images/lab2_step2.jpg)<br>
 1. Create an inventory for ACI.
+    * Every Job Template requires an inventory, which is how Ansible knows what to execute the playbooks against.  Some modules, such as the ACI modules, do not require the host inventory to be explicitly set, rather the module accepts a `hostname` variable and relies on it for sending API calls to the proper ACI endpoint.
+    * Select `Resources -> Inventories` under the left menu and then the `Add` button to create an inventory.  This will be a dummy inventory only to be used as a placeholder.
+    * Fill in a `Name` and select the `Save` button.
+    <br>![](images/lab2_step3.jpg)<br>
 1. Create `Initial Config` job template.
-1. Create `Deploy Contract` job template.
-1. Run the `Initial Config` and `Deploy Contract` job templates.
+    * Job templates tie to individual playbooks and have various customizations that can be applied.  Explore the fields while walking through these steps.
+    * Navigate to `Resources -> Templates` and select the `Add` button and `Add job template` to create a new job template.
+    * Fill in the `Name` field and select the previously created `Inventory`.
+    * Since you should only have 1 `Project` it may be selected by default, if not simply select the previously created project.
+    * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_logical.yml`. *note the leading "lab2/"*
+1. Create `Deploy JumpBox Contract` job template.
+    * Navigate to `Resources -> Templates` and select the `Add` button and `Add job template` to create a new job template.
+    * Fill in the `Name` field and select the previously created `Inventory`.
+    * Select the previously created project if not already populated.
+    * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_jb_contract.yml`.
+1. Run the `Initial Config` and `Deploy JumpBox Contract` job templates.
 1. Review job execution history and details.
 1. Create and run `VRF Enforcement` job template.
 1. Create `Remove vzAny Contract` job template.
@@ -321,4 +354,4 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 1. Create and run `Disable Preferred Group` job template.
 1. Create and run `Deploy Web-App Contract` job template.
 
->Lab 2 Complete!  You should now be familiar with basic tasks in Red Hat Ansible Automation Plaform.
+><br>Lab 2 Complete!  You should now be familiar with basic tasks in Red Hat Ansible Automation Plaform.<br>&nbsp;
