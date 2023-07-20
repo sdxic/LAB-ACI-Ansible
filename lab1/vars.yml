@@ -21,6 +21,6 @@ aci:
     - "web_epg"
     - "app_epg"
     - "db_epg"
-  app_web_only:
+  epg_web_app:
     - "web_epg"
     - "app_epg"

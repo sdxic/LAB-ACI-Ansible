@@ -35,9 +35,9 @@ Ansible is not at the heart of the self-driving car (we hope), but it is a good 
 ## Ansible Automation Platform
 Ansible lacks native controls around governance items like authorization (who can do what). It also has only a command line interface. Ansible Automation Platform brings a more user-friendly GUI experience and provides role-based-access rights. As such, Ansible playbooks (which are still the engine behind Automation Platform) become subject to structured authorization. Target architectures can now be split into very granular permissions, such that only specifically assigned capabilities will be visible and executable by a user who logs in, based on their assigned rights. This granularity may be mandatory in environments where regulatory compliance is a focus.
 
-Automatin Platform also introduces workflow templates that allows jobs, or playbooks, to be sequenced in a graphical manner. The end user who “kicks off” a play does not necessarily see the playbook itself, but they may be entering string variables, making dropdown selections, or pressing radio buttons in a GUI window to populate it. Thus, Ansible Automation Platform is providing additional abstraction from the underlying technology and furthering an “intent based” approach to networking.
+Automation Platform also introduces workflow templates that allows jobs, or playbooks, to be sequenced in a graphical manner. The end user who “kicks off” a play does not necessarily see the playbook itself, but they may be entering string variables, making dropdown selections, or pressing radio buttons in a GUI window to populate it. Thus, Ansible Automation Platform is providing additional abstraction from the underlying technology and furthering an “intent based” approach to networking.
 
-Automatin Platform contains an API as well enabling programmatic control by higher layer orchestration systems to create and/or kick off workflows. This is especially powerful as an integration point for example with ITSM and CMDB tools like ServiceNow.
+Automation Platform contains an API as well enabling programmatic control by higher layer orchestration systems to create and/or kick off workflows. This is especially powerful as an integration point for example with ITSM and CMDB tools like ServiceNow.
 
 ## Lab Overview
 Each lab utilizes the same basic topology components:
@@ -260,7 +260,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     ```
 1. Run playbook `deploy_logical.yml`.  Review the objects that are created in the ACI GUI.  You should see all of the objects that were previously deleted have been redeployed using a single playbook.
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook full_logical.yml 
+    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_logical.yml 
     PLAY [Deploy Full Logical Configuration] ****************************************************
 
     TASK [Gathering Facts] **********************************************************************
@@ -288,7 +288,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
 
     user@localhost:~/LAB-ACI-Ansible/lab1$ 
     ```
-1. Run playbook `deploy_jb_contract.yml` and verify the consumed contract `LAB-SVC-L3Out` now exists on each of the EPGs.
+1. Run playbook `deploy_jb_contract.yml` and verify the consumed contract `LAB-JB` now exists on each of the EPGs.
 1. Verify connectivity from your jumpbox to each of the test virtual machines:
     * web1
     * web2

@@ -20,7 +20,7 @@
       content:
         fvRsConsIf:
           attributes:
-            tnVzCPIfName: "LAB-SVC-L3Out"
+            tnVzCPIfName: "LAB-JB"
             status: created
     with_items:
       "{{ aci.epg }}"
