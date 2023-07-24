@@ -7,20 +7,16 @@
   vars_files: vars.yml
 
   tasks:
-  - name: Consume Imported Contract On EPG
+  - name: Consume Imported Contract On vzAny
     delegate_to: localhost
     ignore_errors: yes
-    cisco.aci.aci_rest:
+    cisco.aci.aci_vzany_to_contract:
       host: "{{ aci.hostname }}"
       username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
-      path: "/api/node/mo/uni/tn-{{ aci.tenant }}/ap-{{ aci.ap }}/epg-{{ item }}.json"
-      method: post
-      content:
-        fvRsConsIf:
-          attributes:
-            tnVzCPIfName: "LAB-JB"
-            status: created
-    with_items:
-      "{{ aci.epg }}"
+      tenant: "{{ aci.tenant }}"
+      vrf: "{{ aci.vrf }}"
+      contract: "LAB-JB"
+      type: "interface"
+      state: "present"
