@@ -288,7 +288,10 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
 
     user@localhost:~/LAB-ACI-Ansible/lab1$ 
     ```
-1. Run playbook `deploy_jb_contract.yml` and verify the consumed contract `LAB-JB` now exists on each of the EPGs.
+1. Run playbook `deploy_jb_contract.yml` and verify the consumed contract `LAB-JB` now exists on the VRF as a vzAny contract.
+    * Navigate to `<Your Tenant>` -> `Networking` -> `VRFs` -> `"vrf"` -> `EPG|ESG Collection for VRF`
+    * Scroll to the bottom secion and look for `Contract Interfaces`.  You should see the `LAB-JB` consumed contract interface listed.
+    <br>![](images/lab1_step15.jpg)<br>
 1. Verify connectivity from your jumpbox to each of the test virtual machines:
     * web1
     * web2
@@ -325,7 +328,7 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Select `Resources -> Projects` under the left menu and then the `Add` button to create a new project.
     * Fill in a `Name` and select `Git` as the `Source Control Type`.  This will expand more options to fill out below.
     * Under `Source Control URL` enter `https://github.com/sdxic/LAB-ACI-Ansible.git`.
-    * Click on the question marks next to each of the checkboxes towards the bottom: Clean, Delete, Track submodules, etc. for a description of what each does.  It's usually recommended to select Clean, Delete and Update Revision on Launch.
+    * Click on the question marks next to each of the checkboxes towards the bottom: Clean, Delete, Track submodules, etc. for a description of what each does.  It's recommended to select Clean, Delete and Update Revision on Launch.
     <br>![](images/lab2_step2.jpg)<br>
 1. Create an inventory for ACI.
     * Every Job Template requires an inventory, which is how Ansible knows what to execute the playbooks against.  Some modules, such as the ACI modules, do not require the host inventory to be explicitly set, rather the module accepts a `hostname` variable and relies on it for sending API calls to the proper ACI endpoint.
@@ -346,10 +349,9 @@ Lab 2 deploys the same environment and then layers security functionality over i
 1. Run the `Initial Config` and `Deploy JumpBox Contract` job templates.
 1. Review job execution history and details.
 1. Create and run `VRF Enforcement` job template.
-1. Create `Remove vzAny Contract` job template.
 1. Create `Enable Preferred Group` job template.
-1. Create `Deploy EPG Contract` job template.
-1. Create `Deploy Jumpbox Contract` job template.
+1. Create `Remove DB Contract` job template.
+1. Create `Deploy App-DB Contract` job template.
 1. Create and run `Deploy Strict Access` ***workflow*** template.
 1. Create and run `Disable Preferred Group` job template.
 1. Create and run `Deploy Web-App Contract` job template.
