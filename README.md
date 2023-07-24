@@ -78,6 +78,7 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 Lab 1 covers the ACI object buildout introducing Ansible as the automation engine, but stops short of securing each of the zones. Review the topology diagram below. At the conclusion of lab 1, you will be able to ping, SSH and send HTTP requests to all test virtual machines in your tenant from your jump box. Additionally, all test virtual machines in your tenant will be able to ping, SSH and send HTTP requests to each other.
 1. Review the 3-tier application topology.<br>![](images/topology.jpg)
 1. Review the [Lab 1 repository](https://github.com/sdxic/LAB-ACI-Ansible/tree/main/lab1/)
+    * Look through the playbooks to learn basic structure and how variables, located in the `vars.yml` file, are referenced.
 1. Manually deploy a VRF in ACI
     * In the ACI GUI navigate to `Tenants -> labX -> Networking -> VRFs`.<br>![](images/lab1_step3a.jpg)
     * Right click on VRFs and selected `Create VRF`.<br>
@@ -87,7 +88,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
 1. Repeat step 3 creating a second VRF with a different name.<br>![](images/lab1_step4.jpg)
 1. Open a terminal and clone the repository.
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ git clone https://www.github.com/sdxic/LAB-ACI-Ansible.git
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ git clone https://www.github.com/sdxic/LAB-ACI-Ansible.git
     Cloning into 'LAB-ACI-Ansible'...
     warning: redirecting to https://github.com/sdxic/LAB-ACI-Ansible.git/
     remote: Enumerating objects: 72, done.
@@ -98,9 +99,21 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     ```
 1. Change to the `LAB-ACI-Ansible/lab1` directory.  List the files in this directory with the `ls` command.
     ```bash
-    user@localhost:~$ cd LAB-ACI-Ansible/lab1
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ls
+    sdx@lab242-130-jb:~$ cd LAB-ACI-Ansible/lab1
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ls
     collections  deploy_ap_epg.yml  deploy_epg_vmm.yml  deploy_jb_contract.yml  deploy_logical.yml  deploy_vrf_bd.yml  input_validation.yml  remove_all.yml  remove_vrf.yml  vars.yml
+    ```
+1. Install Ansible Galaxy modules
+    *  Before some of the playbooks will run you need to install the supporting modules with the `ansible-galaxy install -r collections/requirements.yml` command.
+    ```bash
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-galaxy install -r collections/requirements.yml
+    Starting galaxy collection install process
+    Process install dependency map
+    Starting collection install process
+    Installing 'cisco.aci:2.6.0' to '/home/sdx/.ansible/collections/ansible_collections/cisco/aci'
+    Downloading https://galaxy.ansible.com/download/cisco-aci-2.6.0.tar.gz to /home/sdx/.ansible/tmp/ansible-local-2829fbmicdb3/tmpl3tupgbz
+    cisco.aci (2.6.0) was installed successfully
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$
     ```
 1. Edit the `vars.yml` file and replace `<your_lab_id>` and `<your_lab_password>` with the one listed on the [My Labs](https://catalog.siriussdx.com/my.labs.php) page.
     ```
@@ -108,9 +121,10 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     lab_name: "<your_lab_id>" # Check https://catalog.siriussdx.com/my.labs.php - Format: "lab242-1"
     lab_password: "<your_lab_password>"
     ```
-1. Review & run the `remove_vrf.yml` playbook.
+1. Review the `remove_vrf.yml` file.  Note the module `cisco.aci.aci_vrf` that is utilized in the playbook.  This module is written in python and provides the underlying code which takes input from the playbooks and interprets back and forth to the ACI APICs.
+1. Run the `remove_vrf.yml` playbook and observe the output.
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook remove_vrf.yml 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-playbook remove_vrf.yml 
     PLAY [Remove all VRFs] **********************************************************************
 
     TASK [Gathering Facts] **********************************************************************
@@ -126,14 +140,13 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     PLAY RECAP **********************************************************************************
     localhost                  : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-    user@localhost:~/LAB-ACI-Ansible/lab1$ 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ 
     ```
     Note the changes in the ACI GUI live as the playbook runs.  You should see all VFRs previously created will be deleted.<br>
     ![](images/lab1_step6.jpg)
-1. Review the `remove_vrf.yml` file.  Note the module `cisco.aci.aci_vrf` that is utilized in the playbook.  This module is written in python and provides the underlying code which takes input from the playbooks and interprets back and forth to the ACI APICs.
 1. Run the `ansible-doc cisco.aci.aci_vrf` command to view the documentation related to this module.  Look towards the bottom of the output to find examples typically containing `query`, `add` and `remove` snippets.<br>
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-doc cisco.aci.aci_vrf
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-doc cisco.aci.aci_vrf
     > ACI_VRF    (/home/user/.ansible/collections/ansible_collections/cisco/aci/plugins/modules/aci_vrf.py)
 
             Manage contexts or VRFs on Cisco ACI fabrics. Each context is a private network associated to a tenant, i.e. VRF. Enable Preferred Groups for VRF
@@ -181,7 +194,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     ```
 1. Run playbook `deploy_ap_epg.yml` and review any EPG faults for the newly created objects.  Navigate to `Application Profiles -> ap -> Application EPGs -> web_ep`.  Select `Faults` from the right side menu.<br>
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_ap_epg.yml 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_ap_epg.yml 
     PLAY [Deploy Application Profile and EPGs] **************************************************
 
     TASK [Gathering Facts] **********************************************************************
@@ -198,14 +211,14 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     PLAY RECAP **********************************************************************************
     localhost                  : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-    user@localhost:~/LAB-ACI-Ansible/lab1$ 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ 
 
     ```
     ![](images/lab1_step9a.jpg)<br>
     Why are we seeing fault(s)? What do the fault(s) mean and how can we fix them?
 1. Run playbook `deploy_vrf_bd.yml` and observe the faults page for any changes.  You should see the lifecycle status change to `"Soaking, Clearing"` or `"Raised, Clearing"` or similar.<br>
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_vrf_bd.yml 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_vrf_bd.yml 
     PLAY [Deploy VRF and Bridge Domain] *********************************************************
 
     TASK [Gathering Facts] **********************************************************************
@@ -223,13 +236,13 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     PLAY RECAP **********************************************************************************
     localhost                  : ok=4    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-    user@localhost:~/LAB-ACI-Ansible/lab1$ 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ 
     ```
     ![](images/lab1_step10.jpg)<br>
     > *Note: it may take up to 2 minutes for the faults to fully clear.*
 1. Run playbook `remove_all.yml` and observe changes in the ACI GUI.  What did you notice?  Your tenant should be blank and all VRFs, EPGs, APs and BDs will have been removed.
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook remove_all.yml
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-playbook remove_all.yml
     PLAY [Remove all VRFs BDs and APs] **********************************************************
 
     TASK [Gathering Facts] **********************************************************************
@@ -256,11 +269,11 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     PLAY RECAP **********************************************************************************
     localhost                  : ok=7    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-    user@localhost:~/LAB-ACI-Ansible/lab1$ 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ 
     ```
 1. Run playbook `deploy_logical.yml`.  Review the objects that are created in the ACI GUI.  You should see all of the objects that were previously deleted have been redeployed using a single playbook.
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_logical.yml 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-playbook deploy_logical.yml 
     PLAY [Deploy Full Logical Configuration] ****************************************************
 
     TASK [Gathering Facts] **********************************************************************
@@ -286,7 +299,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     PLAY RECAP **********************************************************************************
     localhost                  : ok=6    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-    user@localhost:~/LAB-ACI-Ansible/lab1$ 
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ 
     ```
 1. Run playbook `deploy_jb_contract.yml` and verify the consumed contract `LAB-JB` now exists on the VRF as a vzAny contract.
     * Navigate to `<Your Tenant>` -> `Networking` -> `VRFs` -> `"vrf"` -> `EPG|ESG Collection for VRF`
@@ -299,7 +312,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     * app2
     * db1
     ```bash
-    user@localhost:~/LAB-ACI-Ansible/lab1$ ping web1 -c 3
+    sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ping web1 -c 3
     PING web1 (10.242.1.11) 56(84) bytes of data.
     64 bytes from lab242-1-web1 (10.242.1.11): icmp_seq=1 ttl=64 time=0.024 ms
     64 bytes from lab242-1-web1 (10.242.1.11): icmp_seq=2 ttl=64 time=0.020 ms
