@@ -1,0 +1,26 @@
+---
+# Generic Vars - These will be set by Ansible Automation Platform
+lab_name: "{{ lookup('env', 'ANSIBLE_NET_USERNAME') }}" 
+lab_password: "{{ lookup('env', 'ANSIBLE_NET_PASSWORD') }}"
+
+# Generated Vars
+second_octet: "{{ lab_name.replace('lab','').split('-')[0] }}"
+third_octet: "{{ lab_name.split('-')[1] }}"
+
+# ACI Vars
+aci:
+  hostname: "aci.siriussdx.com"
+  username: "{{ lab_name }}"
+  password: "{{ lab_password }}"
+  tenant: "{{ lab_name }}"
+  vrf: "vrf"
+  ap: "ap"
+  bd: "bd"
+  gw: "10.{{ second_octet }}.{{ third_octet }}.1"
+  epg:
+    - "web_epg"
+    - "app_epg"
+    - "db_epg"
+  epg_web_app:
+    - "web_epg"
+    - "app_epg"

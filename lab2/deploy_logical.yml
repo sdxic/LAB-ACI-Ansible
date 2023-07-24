@@ -1,0 +1,95 @@
+---
+- import_playbook: input_validation.yml
+
+- name: Deploy Full Logical Config
+  hosts: localhost
+  gather_facts: false
+  vars_files: vars.yml
+
+  tasks:
+  - name: Create VRF
+    delegate_to: localhost
+    cisco.aci.aci_vrf:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      vrf: "{{ aci.vrf }}"
+      tenant: "{{ aci.tenant }}"
+      policy_control_preference: "unenforced"
+      policy_control_direction: "ingress"
+      state: "present"
+ 
+  - name: Create Bridge Domain
+    delegate_to: localhost
+    cisco.aci.aci_bd:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      bd: "{{ aci.bd }}"
+      vrf: "{{ aci.vrf }}"
+      state: "present"
+
+  - name: Create Bridge Domain Subnet
+    delegate_to: localhost
+    cisco.aci.aci_bd_subnet:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      tenant: "{{ aci.tenant }}"
+      bd: "{{ aci.bd }}"
+      gateway: "{{ aci.gw }}"
+      mask: "24"
+      state: "present"
+      scope:
+        - "public"
+        - "shared"
+
+  - name: Deploy Application Profile
+    delegate_to: localhost
+    cisco.aci.aci_ap:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      ap: "{{ aci.ap }}"
+      state: "present"
+
+  - name: Deploy EndPoint Groups
+    delegate_to: localhost
+    cisco.aci.aci_epg:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      ap: "{{ aci.ap }}"
+      epg: "{{ item }}"
+      bd: "{{ aci.bd }}"
+      preferred_group: "no"
+      state: "present"
+    with_items:
+      "{{ aci.epg }}"
+
+  - name: Associate EPG with VMM Domain
+    delegate_to: localhost
+    cisco.aci.aci_epg_to_domain:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: "no"
+      domain: "ACI-FAB2-LAB-Compute"
+      domain_type: "vmm"
+      tenant: "{{ aci.tenant }}"
+      epg: "{{ item }}"
+      ap: "{{ aci.ap }}"
+      deploy_immediacy: "immediate"
+      resolution_immediacy: "immediate"
+      vm_provider: "vmware"
+      state: "present"
+    with_items:
+      "{{ aci.epg }}"
