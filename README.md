@@ -104,7 +104,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     collections  deploy_ap_epg.yml  deploy_epg_vmm.yml  deploy_jb_contract.yml  deploy_logical.yml  deploy_vrf_bd.yml  input_validation.yml  remove_all.yml  remove_vrf.yml  vars.yml
     ```
 1. Install Ansible Galaxy modules
-    *  Before some of the playbooks will run you need to install the supporting modules with the `ansible-galaxy install -r collections/requirements.yml` command.
+    *  Before some of the playbooks will run you need to install the supporting modules with the `ansible-galaxy install -r ../collections/requirements.yml` command.
     ```bash
     sdx@lab242-130-jb:~/LAB-ACI-Ansible/lab1$ ansible-galaxy install -r collections/requirements.yml
     Starting galaxy collection install process
@@ -354,19 +354,53 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Fill in the `Name` field and select the previously created `Inventory`.
     * Since you should only have 1 `Project` it may be selected by default, if not simply select the previously created project.
     * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_logical.yml`. *note the leading "lab2/"*
-1. Create `Deploy JumpBox Contract` job template.
+    * Select `Credentials`.  Within the popup window select the `Category` dropdown and select `Network`. At the bottom select `ACI Lab Creds` and press the `Select` button.
+    <br>![](images/lab2_step4.jpg)
+1. Create `JumpBox Contract` job template.
     * Navigate to `Resources -> Templates` and select the `Add` button and `Add job template` to create a new job template.
     * Fill in the `Name` field and select the previously created `Inventory`.
     * Select the previously created project if not already populated.
-    * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_jb_contract.yml`.
-1. Run the `Initial Config` and `Deploy JumpBox Contract` job templates.
+    * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_vzany_contract.yml`.
+    * Select `Credentials`.  Within the popup window select the `Category` dropdown and select `Network`. At the bottom select `ACI Lab Creds` and press the `Select` button.
+1. Run the `Initial Config` and `JumpBox Contract` job templates.
+    * Navigate to `Resources` -> `Templates` and select the Rocket Ship icon to the right of the `Initial Config` template that was previously created.
+    * This will launch the job template and start displaying the output to the screen.
+    * Once complete run the `JumpBox Contract` job template.
+    <br>![](images/lab2_step6.jpg)
 1. Review job execution history and details.
+    * Navigate to `Jobs` on the left menu.  Notice there are several jobs other than the 2 you just ran.  You should see some related to inventory and project sync, which if you recall, will pull down the playbooks every time a job is executed.
+    * Select any of the jobs and then select `Output` along the top menu.  Here you can review output from playbooks and other tasks.
+    * Select `Details` from the top menu and notice the information you can use for troubleshooting such as the name of the playbook, dates and times, etc.
+    <br>![](images/lab2_step7.jpg)
 1. Create and run `VRF Enforcement` job template.
-1. Create `Enable Preferred Group` job template.
-1. Create `Remove DB Contract` job template.
-1. Create `Deploy App-DB Contract` job template.
-1. Create and run `Deploy Strict Access` ***workflow*** template.
+    * Use playbook `lab2/vrf_enforce_pg.yml`.
+    * This playbook will turn `VRF enforcement` on, which requries contracts between all EPGs to allow communication.
+    * The `preferred group` option is also enabled with this playbook.
+    * Verify in the GUI these values are set correctly after launching the job template.
+    <br>![](images/lab2_step8.jpg)
+1. Create and run `Enable Preferred Group` job template.
+    * Use playbook `lab2/enable_pg.yml`.
+    * This playbook will configure the `web` and `app` EPGs to be in the `preferred group` which allows communication between any EPG in the preferred group without a contract.
+    * Verify in the GUI these values are set correctly after launching the job template.
+    <br>![](images/lab2_step9.jpg)
+1. Create `Remove JumpBox Contract` job template.
+    * Use playbook `lab2/remove_vzany_contract.yml`.
+    * This playbook will remove the JumpBox contract that was applied to the vzAny earlier.
+    * ***do not run this playbook yet***
+1. Create `App-DB Contract` job template.
+    * Use playbook `lab2/app_db_contract.yml`.
+    * This playbook will create and apply a contract provide by the `db_epg` and consumed by the `app_epg`.
+    * ***do not run this playbook yet***
+1. Create `Web App JB Contract`
+    * Use playbook `lab2/web_app_jb_contract.yml`.
+    * This playbook will apply a consumed contract interface to the `web_epg` and `app_epg` enabling communication from your JumpBox.
+    * ***do not run this playbook yet***
+1. Create and run `Strict Access` ***workflow*** template.
+    * This will create a `workflow template` which is a sequence of `job templates` stitched together to run as a whole.
+    * 
+    * ***Note:*** Only the `app_epg` will have access to the `db_epg`.  Your JumpBox and `web_epg` should NOT be able to ping, SSH or HTTP to the `db_epg` once these are applied.
+    <br>![](images/lab2_step13.jpg)
 1. Create and run `Disable Preferred Group` job template.
-1. Create and run `Deploy Web-App Contract` job template.
+1. Create and run `Web-App Contract` job template.
 
 ><br>Lab 2 Complete!  You should now be familiar with basic tasks in Red Hat Ansible Automation Plaform.<br>&nbsp;
