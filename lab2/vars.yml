@@ -21,9 +21,9 @@ aci:
   app_epg: "app_epg"
   db_epg: "db_epg"
   all_epg: 
-    - "{{ web_epg }}"
-    - "{{ app_epg }}"
-    - "{{ db_epg }}"
+    - "{{ aci.web_epg }}"
+    - "{{ aci.app_epg }}"
+    - "{{ aci.db_epg }}"
   web_app_epg:
-    - "{{ web_epg }}"
-    - "{{ app_epg }}"
+    - "{{ aci.web_epg }}"
+    - "{{ aci.app_epg }}"
