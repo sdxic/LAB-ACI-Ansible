@@ -17,7 +17,6 @@
       tenant: "{{ aci.tenant }}"
       ap: "{{ aci.ap }}"
       epg: "{{ item }}"
-      bd: "{{ aci.bd }}"
       preferred_group: "yes"
       state: "present"
     with_items:

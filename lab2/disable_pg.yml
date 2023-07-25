@@ -28,5 +28,6 @@
       tenant: "{{ aci.tenant }}"
       ap: "{{ aci.ap }}"
       epg: "{{ item }}"
+      preferred_group: "no"
     with_items:
       "{{ aci.web_app_epg }}"
