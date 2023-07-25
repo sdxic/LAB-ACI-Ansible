@@ -11,7 +11,7 @@
     delegate_to: localhost
     cisco.aci.aci_contract:
       host: "{{ aci.hostname }}"
-      username: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
@@ -23,7 +23,7 @@
     delegate_to: localhost
     cisco.aci.aci_contract_subject:
       host: "{{ aci.hostname }}"
-      username: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
@@ -38,7 +38,7 @@
     delegate_to: localhost
     cisco.aci.aci_filter:
       host: "{{ aci.hostname }}"
-      username: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
       filter: "basic_open"
@@ -49,7 +49,7 @@
     delegate_to: localhost
     cisco.aci.aci_filter_entry:
       host: "{{ aci.hostname }}"
-      username: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
       state: "present"
@@ -62,7 +62,7 @@
     delegate_to: localhost
     cisco.aci.aci_contract_subject_to_filter:
       host: "{{ aci.hostname }}"
-      username: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
@@ -75,7 +75,7 @@
     delegate_to: localhost
     cisco.aci.aci_epg_to_contract:
       host: "{{ aci.hostname }}"
-      username: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
@@ -89,7 +89,7 @@
     delegate_to: localhost
     cisco.aci.aci_epg_to_contract:
       host: "{{ aci.hostname }}"
-      username: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
