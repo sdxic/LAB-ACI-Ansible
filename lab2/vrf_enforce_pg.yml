@@ -14,11 +14,11 @@
       username: "{{ aci.username }}"
       password: "{{ aci.password }}"
       validate_certs: no
-      tenant: "{{ tenant }}"
-      vrf: "{{ vrf }}"
-      policy_control_preference: enforced
-      policy_control_direction: ingress
-      state: present
+      tenant: "{{ aci.tenant }}"
+      vrf: "{{ aci.vrf }}"
+      policy_control_preference: "enforced"
+      policy_control_direction: "ingress"
+      state: "present"
 
   - name: Enable VRF preferred group 
     delegate_to: localhost
