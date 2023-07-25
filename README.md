@@ -69,7 +69,7 @@ Navigate back to Okta, under `My Apps` select `LAB Access`  This will launch the
 * Ansible CLI
   1. Launch `Terminal` located on the left menu within the jumpbox.
 * Automation Platform GUI
-  1. Access `Red Hat Ansible Automation Platform (RHAAP)` through the Okta `My Apps` page.
+  1. Access `(RHAP) - Ansible Tower` through the Okta `My Apps` page.
   2. Authentication is handled automatically through Okta.
 
 <br><br>
@@ -322,6 +322,8 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
     3 packets transmitted, 3 received, 0% packet loss, time 2045ms
     rtt min/avg/max/mdev = 0.019/0.021/0.024/0.002 ms
     ```
+1. Remove all configuration
+    * Before proceeding to lab 2 re-run the `remove_all.yml` to remove all of the existing configuration from your ACI tenant.
 
 <br>
 
@@ -330,23 +332,30 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
 <br><br>
 
 # Part 4: Lab 2 - Automation Platform GUI
-Lab 2 deploys the same environment and then layers security functionality over it, achieving the entire deployment using Ansible Tower job templates and workflow templates. The student creates their own Tower project, and builds and runs the templates under proctor guidance.  Review the topology diagrams below to familiarize yourself with the various states the logical configuration will enter.  These portray how lab 2 incrementally introduces additional ACI security functionality to better secure the application profile created in lab 1, but it introduces Ansible Automation Platform to facilitate the changes.
+Lab 2 deploys the same environment and then layers security functionality over it, achieving the entire deployment using Ansible Automation Platform job templates and workflow templates. You will create your own Automation Platform project, and build and run the templates.  Review the topology diagrams below to familiarize yourself with the various states the logical configuration will enter.  These portray how lab 2 incrementally introduces additional ACI security functionality to better secure the application profile created in lab 1, but it introduces Ansible Automation Platform to facilitate the changes.
+
+*** Access Okta to launch the `Automation Platform` GUI ***
+
 1. Create credentials for ACI
     * Select `Resources -> Credentials` under the left menu and then the `Add` button to create a new set of credentials.
-    * Fill in a `Name` and set `Credential Type` = `Network`.
-    * Input your lab username in the format `labX-Y`.  (e.g. `lab242-23`).  Find your username & password [here](https://catalog.siriussdx.com/my.labs.php).
+    * Fill in a `Name` (e.g. `ACI Lab Creds`) and set `Credential Type` = `Network`.
+    * Input your lab username in the format `labX-Y`.  (e.g. `lab242-160`).  Find your username & password [here](https://catalog.siriussdx.com/my.labs.php).
     * Input your lab password.
+    * Select the `Save` button.
     <br>![](images/lab2_step1.jpg)<br>
 1. Create a project and sync with repository.  Projects are references to the codebase that contains playbooks.
     * Select `Resources -> Projects` under the left menu and then the `Add` button to create a new project.
     * Fill in a `Name` and select `Git` as the `Source Control Type`.  This will expand more options to fill out below.
     * Under `Source Control URL` enter `https://github.com/sdxic/LAB-ACI-Ansible.git`.
     * Click on the question marks next to each of the checkboxes towards the bottom: Clean, Delete, Track submodules, etc. for a description of what each does.  It's recommended to select Clean, Delete and Update Revision on Launch.
+    * Select the `Save` button.
+    * *Note: when you save the project it will automatically begin a sync to the repository.  If you have any errors it will fail, otherwise the playbooks will automatically sync to Automation Platform.
     <br>![](images/lab2_step2.jpg)<br>
 1. Create an inventory for ACI.
     * Every Job Template requires an inventory, which is how Ansible knows what to execute the playbooks against.  Some modules, such as the ACI modules, do not require the host inventory to be explicitly set, rather the module accepts a `hostname` variable and relies on it for sending API calls to the proper ACI endpoint.
     * Select `Resources -> Inventories` under the left menu and then the `Add` button to create an inventory.  This will be a dummy inventory only to be used as a placeholder.
     * Fill in a `Name` and select the `Save` button.
+    * Select the `Save` button.
     <br>![](images/lab2_step3.jpg)<br>
 1. Create `Initial Config` job template.
     * Job templates tie to individual playbooks and have various customizations that can be applied.  Explore the fields while walking through these steps.
@@ -355,6 +364,7 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Since you should only have 1 `Project` it may be selected by default, if not simply select the previously created project.
     * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_logical.yml`. *note the leading "lab2/"*
     * Select `Credentials`.  Within the popup window select the `Category` dropdown and select `Network`. At the bottom select `ACI Lab Creds` and press the `Select` button.
+    * Select the `Save` button.
     <br>![](images/lab2_step4.jpg)
 1. Create `JumpBox Contract` job template.
     * Navigate to `Resources -> Templates` and select the `Add` button and `Add job template` to create a new job template.
@@ -362,6 +372,7 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Select the previously created project if not already populated.
     * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_vzany_contract.yml`.
     * Select `Credentials`.  Within the popup window select the `Category` dropdown and select `Network`. At the bottom select `ACI Lab Creds` and press the `Select` button.
+    * Select the `Save` button.
 1. Run the `Initial Config` and `JumpBox Contract` job templates.
     * Navigate to `Resources` -> `Templates` and select the Rocket Ship icon to the right of the `Initial Config` template that was previously created.
     * This will launch the job template and start displaying the output to the screen.
