@@ -16,7 +16,7 @@
       validate_certs: no
       tenant: "{{ aci.tenant }}"
       ap: "{{ aci.ap }}"
-      epg: "{{ aci.item }}"
+      epg: "{{ item }}"
       bd: "{{ aci.bd }}"
       preferred_group: "yes"
       state: "present"
