@@ -1,0 +1,100 @@
+---
+- import_playbook: input_validation.yml
+
+- name: Add contract for web-to-app
+  hosts: localhost
+  gather_facts: false
+  vars_files: vars.yml
+
+  tasks:
+  - name: Add a new contract
+    delegate_to: localhost
+    cisco.aci.aci_contract:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.hostname }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      contract: "web-to-app"
+      scope: "application-profile"
+      state: "present"
+
+  - name: Add a new contract subject
+    delegate_to: localhost
+    cisco.aci.aci_contract_subject:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.hostname }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      contract: "web-to-app"
+      subject: "web-to-app"
+      reverse_filter: "yes"
+      priority: "level1"
+      dscp: "unspecified"
+      state: "present"
+
+  - name: Add a new filter to a tenant
+    delegate_to: localhost
+    cisco.aci.aci_filter:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.hostname }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      filter: "basic_open"
+      tenant: "{{ aci.tenant }}"
+      state: "present"
+
+  - name: Add a filter entry
+    delegate_to: localhost
+    cisco.aci.aci_filter_entry:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.hostname }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      state: "present"
+      entry: "ether_open"
+      tenant: "{{ aci.tenant }}"
+      filter: "basic_open"
+      descr: "ether_open"
+
+  - name: Add a new contract subject to filer binding
+    delegate_to: localhost
+    cisco.aci.aci_contract_subject_to_filter:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.hostname }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      contract: "web-to-app"
+      subject: "web-to-app"
+      filter: "basic_open"
+      state: "present"
+    
+  - name: Add contract to EPG bindings
+    delegate_to: localhost
+    cisco.aci.aci_epg_to_contract:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.hostname }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      ap: "{{ ap }}"
+      epg: " {{ aci.app_epg }}"
+      contract: "web-to-app"
+      contract_type: "consumer"
+      state: "present"
+
+  - name: Add contract to EPG bindings
+    delegate_to: localhost
+    cisco.aci.aci_epg_to_contract:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.hostname }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      ap: "{{ aci.ap }}"
+      epg: "{{ aci.web_epg }}"
+      contract: "web-to-app"
+      contract_type: "provider"
+      state: "present"

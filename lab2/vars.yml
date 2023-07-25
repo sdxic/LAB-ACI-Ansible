@@ -17,10 +17,13 @@ aci:
   ap: "ap"
   bd: "bd"
   gw: "10.{{ second_octet }}.{{ third_octet }}.1"
-  epg:
-    - "web_epg"
-    - "app_epg"
-    - "db_epg"
-  epg_web_app:
-    - "web_epg"
-    - "app_epg"
+  web_epg: "web_epg"
+  app_epg: "app_epg"
+  db_epg: "db_epg"
+  all_epg: 
+    - "{{ web_epg }}"
+    - "{{ app_epg }}"
+    - "{{ db_epg }}"
+  web_app_epg:
+    - "{{ web_epg }}"
+    - "{{ app_epg }}"

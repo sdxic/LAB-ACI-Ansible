@@ -1,0 +1,22 @@
+---
+- import_playbook: input_validation.yml
+
+- name: Deploy JumpBox Contract
+  hosts: localhost
+  gather_facts: false
+  vars_files: vars.yml
+
+  tasks:
+  - name: Consume Imported Contract on vzAny
+    delegate_to: localhost
+    ignore_errors: yes
+    cisco.aci.aci_vzany_to_contract:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      vrf: "{{ aci.vrf }}"
+      contract: "LAB-JB"
+      type: "interface"
+      state: "absent"

@@ -1,0 +1,32 @@
+---
+- import_playbook: input_validation.yml
+
+- name: Disable preferred group
+  hosts: localhost
+  gather_facts: false
+  vars_files: vars.yml
+
+  tasks:
+  - name: Disable PG on VRF
+    delegate_to: localhost
+    cisco.aci.aci_vrf:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      vrf: "{{ aci.vrf }}"
+      preferred_group: "disabled"
+
+  - name: Remove EPGs from PG
+    delegate_to: localhost
+    cisco.aci.aci_epg:
+      host: "{{ aci.hostname }}"
+      username: "{{ aci.username }}"
+      password: "{{ aci.password }}"
+      validate_certs: no
+      tenant: "{{ aci.tenant }}"
+      ap: "{{ aci.ap }}"
+      epg: "{{ item }}"
+    with_items:
+      "{{ web_app_epg }}"

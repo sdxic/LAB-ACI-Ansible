@@ -73,7 +73,7 @@
       preferred_group: "no"
       state: "present"
     with_items:
-      "{{ aci.epg }}"
+      "{{ aci.all_epg }}"
 
   - name: Associate EPG with VMM Domain
     delegate_to: localhost
@@ -92,4 +92,4 @@
       vm_provider: "vmware"
       state: "present"
     with_items:
-      "{{ aci.epg }}"
+      "{{ aci.all_epg }}"
