@@ -78,8 +78,8 @@
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
-      ap: "{{ ap }}"
-      epg: "{{ app_epg }}"
+      ap: "{{ aci.ap }}"
+      epg: "{{ aci.app_epg }}"
       contract: "app-to-db"
       contract_type: "consumer"
       state: "present"
@@ -92,8 +92,8 @@
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
-      ap: "{{ ap }}"
-      epg: "{{ db_epg }}"
+      ap: "{{ aci.ap }}"
+      epg: "{{ aci.db_epg }}"
       contract: "app-to-db"
       contract_type: "provider"
       state: "present"
