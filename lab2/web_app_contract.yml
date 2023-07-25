@@ -79,7 +79,7 @@
       password: "{{ aci.password }}"
       validate_certs: no
       tenant: "{{ aci.tenant }}"
-      ap: "{{ ap }}"
+      ap: "{{ aci.ap }}"
       epg: " {{ aci.app_epg }}"
       contract: "web-to-app"
       contract_type: "consumer"
