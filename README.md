@@ -331,7 +331,7 @@ Lab 1 covers the ACI object buildout introducing Ansible as the automation engin
 
 # Part 4: Lab 2 - Automation Platform GUI
 Lab 2 deploys the same environment and then layers security functionality over it, achieving the entire deployment using Ansible Tower job templates and workflow templates. The student creates their own Tower project, and builds and runs the templates under proctor guidance.  Review the topology diagrams below to familiarize yourself with the various states the logical configuration will enter.  These portray how lab 2 incrementally introduces additional ACI security functionality to better secure the application profile created in lab 1, but it introduces Ansible Automation Platform to facilitate the changes.
-1. Create credentials for ACI.
+1. Create credentials for ACI
     * Select `Resources -> Credentials` under the left menu and then the `Add` button to create a new set of credentials.
     * Fill in a `Name` and set `Credential Type` = `Network`.
     * Input your lab username in the format `labX-Y`.  (e.g. `lab242-23`).  Find your username & password [here](https://catalog.siriussdx.com/my.labs.php).
@@ -397,10 +397,31 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * ***do not run this playbook yet***
 1. Create and run `Strict Access` ***workflow*** template.
     * This will create a `workflow template` which is a sequence of `job templates` stitched together to run as a whole.
-    * 
+    * Navigate to `Resources -> Templates` and select the `Add` button and `Add workflow template` to create a new workflow template.
+    * Fill in the `Name` field and select the `Save` button. You will then see the workflow visualizer page.
+    * Select the green `Start` button.
+    * Now you will add each of the `job templates` to the workflow.
+        * From the list add the `Remove JumpBox Contract` and select the `Save` button. 
+        * Notice that job template now shows up in the workflow visualizer.  Hover over the `Remove JumpBox Contract` box to see a menu open of available options.
+        <br>![](images/lab2_step13.jpg)
+        * Select the `plus` icon to add another job template to the workflow. This time you will be presented with a new screen with `On Success`, `On Failure` and `Always` options.  This determines when to execute this next job template based on the output of the preiouvs.  You can begin to see the flexibility of workflow templates and how you can build them to react based upon success criteria.
+        * Select `On Success` and then choose `App-DB Contract` and select the `Save` button.
+        * Repeat this step and add `Web App JB Contract` as a third job in the workflow.
+        * Once complete select the `Save` button in the upper right corner to return.
+    * Launch the workflow and observe the visual output it provides.
+    <br>![](images/lab2_step13a.jpg)
     * ***Note:*** Only the `app_epg` will have access to the `db_epg`.  Your JumpBox and `web_epg` should NOT be able to ping, SSH or HTTP to the `db_epg` once these are applied.
-    <br>![](images/lab2_step13.jpg)
 1. Create and run `Disable Preferred Group` job template.
+    * Use playbook `lab2/disable_pg.yml`.
+    * This playbook will remove `web_egp` and `app_epg` from the preferred group and disable the option under the VRF.
+    * Verify in the GUI these values are set correctly after launching the job template.
+    <br>![](images/lab2_step14.jpg)
+    <br>![](images/lab2_step14a.jpg)
 1. Create and run `Web-App Contract` job template.
+    * Use playbook `lab2/disable_pg.yml`.
+    * This playbook will remove `web_egp` and `app_epg` from the preferred group and disable the option under the VRF.
+    * Verify in the GUI these values are set correctly after launching the job template.
+    <br>![](images/lab2_step15.jpg)
+    <br>![](images/lab2_step15a.jpg)
 
 ><br>Lab 2 Complete!  You should now be familiar with basic tasks in Red Hat Ansible Automation Plaform.<br>&nbsp;
