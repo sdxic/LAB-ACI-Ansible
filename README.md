@@ -362,6 +362,7 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Navigate to `Resources -> Templates` and select the `Add` button and `Add job template` to create a new job template.
     * Fill in the `Name` field and select the previously created `Inventory`.
     * Since you should only have 1 `Project` it may be selected by default, if not simply select the previously created project.
+    * Select the `Organization` that matches your username / lab ID if it was not auto populated.
     * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_logical.yml`. *note the leading "lab2/"*
     * Select `Credentials`.  Within the popup window select the `Category` dropdown and select `Network`. At the bottom select `ACI Lab Creds` and press the `Select` button.
     * Select the `Save` button.
@@ -370,6 +371,7 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Navigate to `Resources -> Templates` and select the `Add` button and `Add job template` to create a new job template.
     * Fill in the `Name` field and select the previously created `Inventory`.
     * Select the previously created project if not already populated.
+    * Select the `Organization` that matches your username / lab ID if it was not auto populated.
     * Select the dropdown for `Playbook` and notice the options listed.  Select `lab2/deploy_vzany_contract.yml`.
     * Select `Credentials`.  Within the popup window select the `Category` dropdown and select `Network`. At the bottom select `ACI Lab Creds` and press the `Select` button.
     * Select the `Save` button.
@@ -409,14 +411,15 @@ Lab 2 deploys the same environment and then layers security functionality over i
 1. Create and run `Strict Access` ***workflow*** template.
     * This will create a `workflow template` which is a sequence of `job templates` stitched together to run as a whole.
     * Navigate to `Resources -> Templates` and select the `Add` button and `Add workflow template` to create a new workflow template.
-    * Fill in the `Name` field and select the `Save` button. You will then see the workflow visualizer page.
+    * Fill in the `Name` field and select the `Organization` that matches your username / lab ID if it was not auto populated.
+    * Select the `Save` button then you will then see the workflow visualizer page.
     * Select the green `Start` button.
     * Now you will add each of the `job templates` to the workflow.
         * From the list add the `Remove JumpBox Contract` and select the `Save` button. 
         * Notice that job template now shows up in the workflow visualizer.  Hover over the `Remove JumpBox Contract` box to see a menu open of available options.
         <br>![](images/lab2_step13.jpg)
         * Select the `plus` icon to add another job template to the workflow. This time you will be presented with a new screen with `On Success`, `On Failure` and `Always` options.  This determines when to execute this next job template based on the output of the preiouvs.  You can begin to see the flexibility of workflow templates and how you can build them to react based upon success criteria.
-        * Select `On Success` and then choose `App-DB Contract` and select the `Save` button.
+        * Select `On Success` and the `Next` button. On the next screen choose `App-DB Contract` and select `Save`.
         * Repeat this step and add `Web App JB Contract` as a third job in the workflow.
         * Once complete select the `Save` button in the upper right corner to return.
     * Launch the workflow and observe the visual output it provides.
@@ -429,8 +432,8 @@ Lab 2 deploys the same environment and then layers security functionality over i
     <br>![](images/lab2_step14.jpg)
     <br>![](images/lab2_step14a.jpg)
 1. Create and run `Web-App Contract` job template.
-    * Use playbook `lab2/disable_pg.yml`.
-    * This playbook will remove `web_egp` and `app_epg` from the preferred group and disable the option under the VRF.
+    * Use playbook `lab2/web_app_contract.yml`.
+    * This playbook will create apply a consumed contract on `web_epg` and provided contract on `app_epg` enabling communication between the web and app servers.
     * Verify in the GUI these values are set correctly after launching the job template.
     <br>![](images/lab2_step15.jpg)
     <br>![](images/lab2_step15a.jpg)
