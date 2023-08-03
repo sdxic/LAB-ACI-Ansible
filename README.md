@@ -385,17 +385,22 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Select any of the jobs and then select `Output` along the top menu.  Here you can review output from playbooks and other tasks.
     * Select `Details` from the top menu and notice the information you can use for troubleshooting such as the name of the playbook, dates and times, etc.
     <br>![](images/lab2_step7.jpg)
+    * The topology should now be in the state as shown in the diagram below.  This will match the end state of lab 1 previously.
+    <br>![](images/lab2_step7a.jpg)
 1. Create and run `VRF Enforcement` job template.
     * Use playbook `lab2/vrf_enforce_pg.yml`.
     * This playbook will turn `VRF enforcement` on, which requries contracts between all EPGs to allow communication.
     * The `preferred group` option is also enabled with this playbook.
     * Verify in the GUI these values are set correctly after launching the job template.
     <br>![](images/lab2_step8.jpg)
+    * With VRF enforcement on the `web`, `app`, and `db` servers should no longer be able to reach each other.
 1. Create and run `Enable Preferred Group` job template.
     * Use playbook `lab2/enable_pg.yml`.
     * This playbook will configure the `web` and `app` EPGs to be in the `preferred group` which allows communication between any EPG in the preferred group without a contract.
     * Verify in the GUI these values are set correctly after launching the job template.
     <br>![](images/lab2_step9.jpg)
+    * Notice now the `web` and `app` servers are able to reach each other again after being placed in the `Preferred Group`.
+    <br>![](images/lab2_step9a.jpg)
 1. Create `Remove JumpBox Contract` job template.
     * Use playbook `lab2/remove_vzany_contract.yml`.
     * This playbook will remove the JumpBox contract that was applied to the vzAny earlier.
@@ -425,6 +430,8 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Launch the workflow and observe the visual output it provides.
     <br>![](images/lab2_step13a.jpg)
     * ***Note:*** Only the `app_epg` will have access to the `db_epg`.  Your JumpBox and `web_epg` should NOT be able to ping, SSH or HTTP to the `db_epg` once these are applied.
+    * See the diagram below depicting the current logical state:
+    <br>![](images/lab2_step13b.jpg)
 1. Create and run `Disable Preferred Group` job template.
     * Use playbook `lab2/disable_pg.yml`.
     * This playbook will remove `web_egp` and `app_epg` from the preferred group and disable the option under the VRF.
@@ -437,5 +444,7 @@ Lab 2 deploys the same environment and then layers security functionality over i
     * Verify in the GUI these values are set correctly after launching the job template.
     <br>![](images/lab2_step15.jpg)
     <br>![](images/lab2_step15a.jpg)
+    * The final logical state is shown below.
+    <br>![](images/lab2_step15b.jpg)
 
 ><br>Lab 2 Complete!  You should now be familiar with basic tasks in Red Hat Ansible Automation Plaform.<br>&nbsp;
